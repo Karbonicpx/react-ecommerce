@@ -1,6 +1,6 @@
 import './HomePage.css';
 import { Header } from '../components/Header';
-function HomePage() {
+export function HomePage() {
 
     // Loading the elements of the / into this component
     return (
@@ -162,5 +162,3 @@ function HomePage() {
     )
 
 }
-
-export default HomePage;
