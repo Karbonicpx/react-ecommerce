@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import './HomePage.css';
 import { Header } from '../components/Header';
-export function HomePage() {
+export function HomePage({cart}) {
 
     /* Getting the products backend data, with a fetch request
     // Returns a promise --> Asynchronous code
@@ -19,7 +19,6 @@ export function HomePage() {
     // Saving the data of the backend in this state ([] is for empty initial value)
     const [products, setProducts] = useState([]);
 
-    const [cart, setCart] = useState([]);
     // Using a useEffect since the request needs to only run once (with empty array)
     useEffect(() => {
 
@@ -30,10 +29,7 @@ export function HomePage() {
            setProducts(response.data)
         });
 
-        // Requesting data from cart
-        axios.get("/api/cart-items").then((response) => {
-            setCart(response.data)
-        })
+       
     }, [])
 
     // Loading the elements of the / into this component
