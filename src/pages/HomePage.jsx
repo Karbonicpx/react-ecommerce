@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Header } from '../components/Header';
 import './HomePage.css';
-export function HomePage({cart}) {
+export function HomePage({ cart }) {
 
     /* Getting the products backend data, with a fetch request
     // Returns a promise --> Asynchronous code
@@ -20,83 +20,89 @@ export function HomePage({cart}) {
     const [products, setProducts] = useState([]);
 
     // Using a useEffect since the request needs to only run once (with empty array)
+    // Since the await requires a async function, the function of useEffect returns a promise, which breaks his functionality
+    // Instead, create a async function inside the useEffect function
     useEffect(() => {
 
-        // OR, you can use axios (npm package) which already makes the json conversion process
-        axios.get("/api/products").then((response) => {
+        const getHomeData = async () => {
+            // OR, you can use axios (npm package) which already makes the json conversion process
+            // Use await for saving the fetch data to a variable
+            const response = await axios.get("/api/products").then((response) => {
 
-            // Function that will load the data for the products
-           setProducts(response.data)
-        });
+                // Function that will load the data for the products
+                setProducts(response.data)
+            });
+        
+        };
 
-       
-    }, [])
+        getHomeData();
+}, [])
 
-    // Loading the elements of the / into this component
-    return (
+// Loading the elements of the / into this component
+return (
 
 
-        <>
-            <Header cart = {cart} />
+    <>
+        <Header cart={cart} />
 
-            <div className="home-page">
-                <div className="products-grid">
-                    {products.map((product) => {
-                        return (
-                            <div key={product.id} className="product-container">
-                                <div className="product-image-container">
-                                    <img className="product-image"
-                                        src={product.image} />
-                                </div>
-
-                                <div className="product-name limit-text-to-2-lines">
-                                    {product.name}
-                                </div>
-
-                                <div className="product-rating-container">
-                                    <img className="product-rating-stars"
-                                        src={`images/ratings/rating-${product.rating.stars * 10}.png`} />
-                                    <div className="product-rating-count link-primary">
-                                        {product.rating.count}
-                                    </div>
-                                </div>
-
-                                <div className="product-price">
-                                    {`$${(product.priceCents / 100).toFixed(2)}`}
-                                </div>
-
-                                <div className="product-quantity-container">
-                                    <select>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                        <option value="6">6</option>
-                                        <option value="7">7</option>
-                                        <option value="8">8</option>
-                                        <option value="9">9</option>
-                                        <option value="10">10</option>
-                                    </select>
-                                </div>
-
-                                <div className="product-spacer"></div>
-
-                                <div className="added-to-cart">
-                                    <img src="images/icons/checkmark.png" />
-                                    Added
-                                </div>
-
-                                <button className="add-to-cart-button button-primary">
-                                    Add to Cart
-                                </button>
+        <div className="home-page">
+            <div className="products-grid">
+                {products.map((product) => {
+                    return (
+                        <div key={product.id} className="product-container">
+                            <div className="product-image-container">
+                                <img className="product-image"
+                                    src={product.image} />
                             </div>
-                        )
-                    })}
-                </div>
-            </div>
-        </>
 
-    )
+                            <div className="product-name limit-text-to-2-lines">
+                                {product.name}
+                            </div>
+
+                            <div className="product-rating-container">
+                                <img className="product-rating-stars"
+                                    src={`images/ratings/rating-${product.rating.stars * 10}.png`} />
+                                <div className="product-rating-count link-primary">
+                                    {product.rating.count}
+                                </div>
+                            </div>
+
+                            <div className="product-price">
+                                {`$${(product.priceCents / 100).toFixed(2)}`}
+                            </div>
+
+                            <div className="product-quantity-container">
+                                <select>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                </select>
+                            </div>
+
+                            <div className="product-spacer"></div>
+
+                            <div className="added-to-cart">
+                                <img src="images/icons/checkmark.png" />
+                                Added
+                            </div>
+
+                            <button className="add-to-cart-button button-primary">
+                                Add to Cart
+                            </button>
+                        </div>
+                    )
+                })}
+            </div>
+        </div>
+    </>
+
+)
 
 }
