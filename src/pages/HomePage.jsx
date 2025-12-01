@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import './HomePage.css';
 import { Header } from '../components/Header';
+import './HomePage.css';
 export function HomePage({cart}) {
 
     /* Getting the products backend data, with a fetch request

@@ -14,8 +14,8 @@ function App() {
     const [cart, setCart] = useState([]);
 
     useEffect(() => {
-        // Requesting data from cart
-        axios.get("/api/cart-items").then((response) => {
+        // Requesting data from cart (using query parameter to expend product details)
+        axios.get("/api/cart-items?expand=product").then((response) => {
             setCart(response.data)
         })
     }, [])
@@ -27,7 +27,7 @@ function App() {
             {/* Route path (URL, in this case is empty so index, or "/") is basically the page, and element is the component we want to show in that page */}
             <Route index element={<HomePage cart={cart} />} />
             <Route path="checkout" element={<CheckoutPage cart={cart}/>} />
-            <Route path="orders" element={<OrdersPage />} />
+            <Route path="orders" element={<OrdersPage cart={cart} />} />
             <Route path="tracking" element={<TrackingPage />} />
         </Routes>
 
