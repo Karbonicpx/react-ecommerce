@@ -18,13 +18,21 @@ export function HomePage() {
 
     // Saving the data of the backend in this state ([] is for empty initial value)
     const [products, setProducts] = useState([]);
+
+    const [cart, setCart] = useState([]);
     // Using a useEffect since the request needs to only run once (with empty array)
     useEffect(() => {
 
         // OR, you can use axios (npm package) which already makes the json conversion process
-        axios.get("http://localhost:3000/api/products").then((response) => {
+        axios.get("/api/products").then((response) => {
 
+            // Function that will load the data for the products
            setProducts(response.data)
+        });
+
+        // Requesting data from cart
+        axios.get("/api/cart-items").then((response) => {
+            setCart(response.data)
         })
     }, [])
 
@@ -33,7 +41,7 @@ export function HomePage() {
 
 
         <>
-            <Header />
+            <Header cart = {cart} />
 
             <div className="home-page">
                 <div className="products-grid">

@@ -7,7 +7,19 @@ export default defineConfig({
     react({
       babel: {
         plugins: [['babel-plugin-react-compiler']],
+        
       },
     }),
   ],
+  // Shortcut for the server and images
+  server: {
+    proxy: {
+      '/api': {
+        target: "http://localhost:3000"
+      },
+      '/images': {
+        target: "http://localhost:3000"
+      }
+    }
+  }
 })
