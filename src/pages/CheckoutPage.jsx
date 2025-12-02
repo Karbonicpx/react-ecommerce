@@ -1,14 +1,18 @@
+/* eslint-disable no-unused-vars */
 import './checkout-header.css'
 import './CheckoutPage.css'
 import axios from 'axios'
+import { useNavigate } from 'react-router'
 import { useState, useEffect } from 'react'
 import { Header } from '../components/Header'
 import dayjs from 'dayjs'
-export function CheckoutPage({ cart }) {
+export function CheckoutPage({ cart, loadCart }) {
 
     const [deliveryOptions, setDeliveryOptions] = useState([]);
     const [paymentSummary, setPaymentSummary] = useState(null);
 
+    // Allows to navigate to another page
+    const navigate = useNavigate();
     useEffect(() => {
 
 
@@ -20,20 +24,22 @@ export function CheckoutPage({ cart }) {
                 })
 
 
-            response = await axios.get('/api/payment-summary').then((response) => {
-                setPaymentSummary(response.data)
-            })
+            response = await axios.get('/api/payment-summary')
+                .then((response) => {
+                    setPaymentSummary(response.data)
+                })
         }
 
 
         fetchCheckoutData();
 
-    }, [])
+        // When cart changes, the useEffect is executed again
+    }, [cart])
     return (
         <>
 
             <Header cart={cart} />
-
+            <title>Checkout</title>
             <div className="checkout-page">
                 <div className="page-title">Review your order</div>
 
@@ -67,35 +73,49 @@ export function CheckoutPage({ cart }) {
                                                 <span>
                                                     Quantity: <span className="quantity-label">{cartItem.quantity}</span>
                                                 </span>
-                                                <span className="update-quantity-link link-primary">
+                                                <span className="update-quantity-link link-primary" onClick={async () => {
+                                                    await axios.put(`/api/cart-items/${cartItem.productId}`);
+
+                                                    await loadCart();
+                                                }}>
                                                     Update
                                                 </span>
-                                                <span className="delete-quantity-link link-primary">
+                                                <span className="delete-quantity-link link-primary" onClick={async () => {
+                                                   await axios.delete(`/api/cart-items/${cartItem.productId}`)
+
+                                                   await loadCart();
+                                                }}>
                                                     Delete
                                                 </span>
                                             </div>
                                         </div>
 
                                         <div className="delivery-options">
-                                            <div className="delivery-options-title">
+                                            <div className="delivery-options-title" >
                                                 Choose a delivery option:
                                             </div>
-                                            {deliveryOptions.map(() => {
+                                            {deliveryOptions.map((deliveryOption) => {
 
                                                 let priceString = "FREE Shipping";
 
-                                                if (deliveryOptions.priceCents > 0) {
+                                                if (deliveryOption.priceCents > 0) {
 
-                                                    priceString = `$${(deliveryOptions.priceCents / 100).toFixed(2)} - Shipping`;
+                                                    priceString = `$${(deliveryOption.priceCents / 100).toFixed(2)} - Shipping`;
                                                 }
                                                 return (
-                                                    <div key={deliveryOptions.id} className="delivery-option">
-                                                        <input type="radio" checked={deliveryOptions.id = cartItem.deliveryOptionId}
+                                                    <div key={deliveryOption.id} className="delivery-option" onClick={async () => {
+                                                        await axios.put(`/api/cart-items/${cartItem.productId}`, {
+                                                            deliveryOptionId: deliveryOption.id
+                                                        })
+                                                        await loadCart();
+                                                    }}>
+                                                        <input type="radio" checked={deliveryOption.id === cartItem.deliveryOptionId}
                                                             className="delivery-option-input"
-                                                            name={`delivery-option-${cartItem.productId}`} />
+                                                            name={`delivery-option-${cartItem.productId}`}
+                                                            onChange={() => { }} />
                                                         <div>
                                                             <div className="delivery-option-date">
-                                                                {dayjs(deliveryOptions.estimatedDeliveryTimeMs).format('dddd, MMMM, D')}
+                                                                {dayjs(deliveryOption.estimatedDeliveryTimeMs).format('dddd, MMMM, D')}
                                                             </div>
                                                             <div className="delivery-option-price">
                                                                 {priceString}
@@ -153,7 +173,13 @@ export function CheckoutPage({ cart }) {
                                     </div>
                                 </div>
 
-                                <button className="place-order-button button-primary">
+                                <button className="place-order-button button-primary" onClick={async () => {
+                                    await axios.post('/api/orders')
+
+                                    await loadCart()
+
+                                    navigate('/orders') // Does not need await
+                                }}>
                                     Place your order
                                 </button>
                             </>

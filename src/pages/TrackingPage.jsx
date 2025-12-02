@@ -5,7 +5,7 @@ export function TrackingPage() {
     return (
         <>
             <Header/>
-
+            <title>Tracking</title>
             <div className="tracking-page">
                 <div className="order-tracking">
                     <a className="back-to-orders-link link-primary" href="/orders">

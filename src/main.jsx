@@ -5,7 +5,7 @@ import { BrowserRouter } from "react-router"; // Used to navigate in different p
 // Render the root, which is the main component that holds all other components
 ReactDOM.createRoot(document.getElementById("root")).render((
   <>
-    {/* Basically saying that the homePage is inside the routing in the App */}
+    {/* Basically saying that the App is inside the routing in the project */}
     <BrowserRouter>
      <App/>
     </BrowserRouter>
